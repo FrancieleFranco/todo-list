@@ -33,8 +33,8 @@ import { HeaderComponent } from '../header/header.component';
 export class TodoFormComponent {
   private todosSignalService = inject(TodoSignalsService);
   //acessar o componete que abriu a modal
-  constructor(private dialogRefService: MatDialogRef<HeaderComponent>) {}
-  //private dialogRefService = inject(MatDialogRef<HeaderComponent>);
+  //constructor(private dialogRefService: MatDialogRef<HeaderComponent>) {}pode utilizar essa abordagem
+  private dialogRefService = inject(MatDialogRef<HeaderComponent>);
 
   public allTodos = this.todosSignalService.todoState();
 
@@ -60,6 +60,6 @@ export class TodoFormComponent {
   }
 
   handleClosedModal(): void {
-    // this.dialogRefService.close();
+    this.dialogRefService.close();
   }
 }
