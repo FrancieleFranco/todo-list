@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/header/header.component';
 import { TodoCardComponent } from './components/todo-card/todo-card.component';
 import { SchoolData } from './model/models/schoolData.module';
-import { Observable, from, map, of, zip } from 'rxjs';
+import { Observable, filter, from, map, of, zip } from 'rxjs';
 import { SchoolService } from './service/school.service';
 
 @Component({
@@ -35,6 +35,16 @@ export class AppComponent implements OnInit {
       age: 27,
       profession: 'Vendedor',
     },
+    {
+      name: 'Lucas Souza',
+      age: 27,
+      profession: 'Analista de Software',
+    },
+    {
+      name: 'Bruno Silva',
+      age: 37,
+      profession: 'Analista de Software',
+    },
   ]);
 
   constructor(private schoolService: SchoolService) {}
@@ -42,9 +52,22 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     //this.getSchoolDatas();
     //this.getMultipliedAges();
-    this.getPeopleProfessions();
+    // this.getPeopleProfessions();
+    this.getSoftware();
   }
 
+  getSoftware(): void {
+    this.peopleDatas
+      .pipe(
+        filter((people) => people.profession === 'Analista de Software'),
+        map((people) => people.name)
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('nome do desenvolvedor', response);
+        },
+      });
+  }
   getPeopleProfessions(): void {
     this.peopleDatas.pipe(map((people) => people.profession)).subscribe({
       next: (response) => {
