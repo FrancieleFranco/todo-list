@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/header/header.component';
 import { TodoCardComponent } from './components/todo-card/todo-card.component';
 import { SchoolData } from './model/models/schoolData.module';
-import { Observable, zip } from 'rxjs';
+import { Observable, from, map, of, zip } from 'rxjs';
 import { SchoolService } from './service/school.service';
 
 @Component({
@@ -18,11 +18,47 @@ export class AppComponent implements OnInit {
   students: SchoolData[] = [];
   teachers: SchoolData[] = [];
   private zipSchoolResponse$ = zip(this.getStudentsDatas(), this.getTeachers());
+  private ages = of(20, 30, 40, 50, 60, 70);
+  private peopleDatas = from([
+    {
+      name: 'Fran Franco',
+      age: 30,
+      profession: 'Desenvolvedora Front',
+    },
+    {
+      name: 'Weliton Franco',
+      age: 27,
+      profession: 'QA',
+    },
+    {
+      name: 'João Silva',
+      age: 27,
+      profession: 'Vendedor',
+    },
+  ]);
 
   constructor(private schoolService: SchoolService) {}
 
   ngOnInit(): void {
-    this.getSchoolDatas();
+    //this.getSchoolDatas();
+    //this.getMultipliedAges();
+    this.getPeopleProfessions();
+  }
+
+  getPeopleProfessions(): void {
+    this.peopleDatas.pipe(map((people) => people.profession)).subscribe({
+      next: (response) => {
+        console.log('profissão', response);
+      },
+    });
+  }
+
+  getMultipliedAges(): void {
+    this.ages.pipe(map((age) => age * age)).subscribe({
+      next: (response) => {
+        console.log('idades multiplicadas', response);
+      },
+    });
   }
 
   public getSchoolDatas(): void {
