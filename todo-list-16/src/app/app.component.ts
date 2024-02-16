@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/header/header.component';
 import { TodoCardComponent } from './components/todo-card/todo-card.component';
 import { SchoolData } from './model/models/schoolData.module';
-import { Observable, filter, from, map, of, zip } from 'rxjs';
+import { Observable, filter, from, map, of, switchMap, zip } from 'rxjs';
 import { SchoolService } from './service/school.service';
 
 @Component({
@@ -46,14 +46,30 @@ export class AppComponent implements OnInit {
       profession: 'Analista de Software',
     },
   ]);
+  private studentUserId = '2';
 
   constructor(private schoolService: SchoolService) {}
 
   ngOnInit(): void {
-    //this.getSchoolDatas();
-    //this.getMultipliedAges();
-    // this.getPeopleProfessions();
-    this.getSoftware();
+    this.handleFindStudentsById();
+  }
+
+  handleFindStudentsById(): void {
+    this.getStudentsDatas()
+      .pipe(
+        switchMap((students) =>
+          this.findStudentById(students, this.studentUserId)
+        )
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('retorno estudante filtrado', response);
+        },
+      });
+  }
+
+  findStudentById(students: SchoolData[], userId: string) {
+    return of([students.find((student) => student.id === userId)]);
   }
 
   getSoftware(): void {
