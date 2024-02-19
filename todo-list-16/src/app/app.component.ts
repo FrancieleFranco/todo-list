@@ -28,6 +28,7 @@ export class AppComponent implements OnInit {
 
   title = 'todo-list-16';
   public todoSignal!: WritableSignal<Todo[]>;
+  public renderTestMessage = false;
 
   //utilizando opreadores
   students: SchoolData[] = [];

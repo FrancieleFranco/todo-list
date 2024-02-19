@@ -7,6 +7,8 @@ import {
   NoopAnimationsModule,
 } from '@angular/platform-browser/animations';
 import { Todo } from './model/models/todo.module';
+import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -59,5 +61,21 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     expect(todoSignalsService.updateTodos).toHaveBeenCalledWith(newTodo);
     expect(component.todoSignal()).toEqual([newTodo]);
+  });
+
+  it('should not reder paragraph in the DOM', () => {
+    const componentDebugElement: DebugElement = fixture.debugElement;
+    const element: HTMLElement = componentDebugElement.nativeElement;
+    const paragrapf = element.querySelector('p');
+    expect(paragrapf).toBeNull();
+  });
+
+  it('should  reder paragraph correctly', () => {
+    component.renderTestMessage = true;
+    fixture.detectChanges();
+    const componentDebugElement: DebugElement = fixture.debugElement;
+    const paragraphDebugElement = componentDebugElement.query(By.css('p'));
+    const paragrapf: HTMLElement = paragraphDebugElement.nativeElement;
+    expect(paragrapf.textContent).toEqual('Test your angular application');
   });
 });
