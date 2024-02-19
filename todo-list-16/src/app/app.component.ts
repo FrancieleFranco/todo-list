@@ -29,6 +29,7 @@ export class AppComponent implements OnInit {
   title = 'todo-list-16';
   public todoSignal!: WritableSignal<Todo[]>;
   public renderTestMessage = false;
+  public isDoned = false;
 
   //utilizando opreadores
   students: SchoolData[] = [];
@@ -146,5 +147,11 @@ export class AppComponent implements OnInit {
       this.todoSignalsService.updateTodos(todo);
       this.todoSignal = this.todoSignalsService.todoState;
     }
+  }
+
+  handleCheckIsDone(): void {
+    setTimeout(() => {
+      this.isDoned = true;
+    }, 200);
   }
 }
