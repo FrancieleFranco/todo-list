@@ -1,10 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { TodoSignalsService } from './service/todo-signals.service';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  WritableSignal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './components/header/header.component';
 import { TodoCardComponent } from './components/todo-card/todo-card.component';
 import { SchoolData } from './model/models/schoolData.module';
 import { Observable, filter, from, map, of, switchMap, zip } from 'rxjs';
 import { SchoolService } from './service/school.service';
+import { Todo } from './model/models/todo.module';
 
 @Component({
   selector: 'app-root',
@@ -17,11 +26,10 @@ export class AppComponent implements OnInit {
   @Input() public projectName!: string;
   @Output() public ouputEvent = new EventEmitter<string>();
 
-  public handleEmitEvent(): void {
-    this.ouputEvent.emit(this.projectName);
-  }
-
   title = 'todo-list-16';
+  public todoSignal!: WritableSignal<Todo[]>;
+
+  //utilizando opreadores
   students: SchoolData[] = [];
   teachers: SchoolData[] = [];
   private zipSchoolResponse$ = zip(this.getStudentsDatas(), this.getTeachers());
@@ -55,7 +63,10 @@ export class AppComponent implements OnInit {
   ]);
   private studentUserId = '2';
 
-  constructor(private schoolService: SchoolService) {}
+  constructor(
+    private schoolService: SchoolService,
+    private todoSignalsService: TodoSignalsService
+  ) {}
 
   ngOnInit(): void {
     this.handleFindStudentsById();
@@ -121,5 +132,18 @@ export class AppComponent implements OnInit {
 
   private getTeachers(): Observable<Array<SchoolData>> {
     return this.schoolService.getTeachers();
+  }
+
+  //test
+
+  public handleEmitEvent(): void {
+    this.ouputEvent.emit(this.projectName);
+  }
+
+  handleCreateTodo(todo: Todo): void {
+    if (todo) {
+      this.todoSignalsService.updateTodos(todo);
+      this.todoSignal = this.todoSignalsService.todoState;
+    }
   }
 }

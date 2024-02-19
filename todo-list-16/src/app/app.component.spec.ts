@@ -1,17 +1,26 @@
+import { TodoSignalsService } from './service/todo-signals.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { first } from 'rxjs';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from '@angular/platform-browser/animations';
+import { Todo } from './model/models/todo.module';
 
 describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
+  let todoSignalsService: TodoSignalsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [AppComponent],
+      imports: [AppComponent, BrowserAnimationsModule, NoopAnimationsModule],
+      providers: [TodoSignalsService],
     });
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
+    todoSignalsService = TestBed.inject(TodoSignalsService);
     fixture.detectChanges();
   });
 
@@ -36,5 +45,19 @@ describe('AppComponent', () => {
         component.handleEmitEvent();
       },
     });
+  });
+
+  it('should create new todo correctly and call service method', () => {
+    jest.spyOn(todoSignalsService, 'updateTodos');
+    const newTodo: Todo = {
+      id: 1,
+      title: 'Testing creating Todo',
+      description: 'Test new Todo',
+      done: true,
+    };
+    component.handleCreateTodo(newTodo);
+    fixture.detectChanges();
+    expect(todoSignalsService.updateTodos).toHaveBeenCalledWith(newTodo);
+    expect(component.todoSignal()).toEqual([newTodo]);
   });
 });
